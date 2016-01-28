@@ -45,7 +45,7 @@
 	var doc = document; 
 	
 	//Holds the functions which govern how pieces can move
-	//var moveRules = {P: pawnMover()};
+	var moveRules = {P: pawnMover, N: knightMover, K: kingMover};
 	
 	//Creates our 8x8 chess board
 	for (i = 0; i < 8; i++) {
@@ -79,7 +79,7 @@
 			if (x == 0 || x == 7)
 				result += "R";
 			else if (x == 1 || x == 6)
-				result += "K";
+				result += "N";
 			else if (x == 2 || x == 5)
 				result += "B";
 			else if (x == 3)
@@ -124,8 +124,7 @@
 	}
 	
 	function moveMaker(lastPiece) {
-			return pawnMover();
-			//return moveRules[document.getElementById(lastPiece).value.substring(1)];
+			return moveRules[document.getElementById(lastPiece).value.substring(1)]();
 	}
 	
 	function pawnMover() {
@@ -146,6 +145,20 @@
 				return false;
 		}
 	
+	}
+	
+	function knightMover() {
+		if (Math.abs(lastPiece.substring(2) - selectedY) * Math.abs(lastPiece.substring(0,1) - selectedX) == 2)
+			return true;
+		else 
+			return false;
+	
+	}
+	function kingMover() {
+		if (Math.abs(lastPiece.substring(2) - selectedY) * Math.abs(lastPiece.substring(0,1) - selectedX) == 1)
+			return true;
+		else 
+			return false;
 	}
 </script
 
