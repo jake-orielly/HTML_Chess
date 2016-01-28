@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Let's try some crap</p>
+
+<!-- Every time I try to comment inside the style section it borks. All you need to know is it makes stuff perty-->
+<style>
+	.button, .selectedButton {
+		background-color: #4CAF50;
+		border: none;
+		color: white;
+		height: 50px;
+		width: 50px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 1px 1px;
+		cursor: pointer;
+	}
+
+	.selectedButton {
+		border-style: inset
+	}
+</style>
+
+<script>
+	
+	//Has a square been selected?
+	var selected = false;
+	//The piece that was previously selected 
+	var lastPiece;
+	//The black rook has piece color B and piece R
+	var pieceColor;
+	var piece;
+	
+	var selectedX;
+	var selectedY;
+	
+	//The player whose move it is
+	var currentPlayer = "W";
+	
+	//This holds the HTML document for the script to access
+	var doc = document; 
+	
+	//Holds the functions which govern how pieces can move
+	//var moveRules = {P: pawnMover()};
+	
+	//Creates our 8x8 chess board
+	for (i = 0; i < 8; i++) {
+		document.write("<div>");
+
+		for (j = 0; j < 8; j ++)
+			document.write(generateButton(i,j));
+
+		document.write("</div>");
+	}
+
+	//Generates the string we use to make the button
+	function generateButton(y,x) {
+		return "<input type='button' class= 'button' value=" + assignPiece(y,x) + " id=" + x + "," + y + " onclick='myFunction(" + x + "," + y + ")'/>";
+	}
+	
+	//Gives generateButton the pieces at the start of the game
+	function assignPiece (y,x) {
+	var result;
+	result = ".";
+		if (y == 1)
+			result = 'BP';
+		else if (y == 6)
+			result = "WP";
+		else if (y == 0 || y ==7) {
+			if (y == 0)
+				result = "B";
+			else 
+				result = "W";
+			
+			if (x == 0 || x == 7)
+				result += "R";
+			else if (x == 1 || x == 6)
+				result += "K";
+			else if (x == 2 || x == 5)
+				result += "B";
+			else if (x == 3)
+				result += "Q";
+			else if (x == 4)
+				result += "K";
+		}
+		return result;
+	}
+	
+	//Called when a button is pressed
+	function myFunction(x,y) {
+		pieceColor = document.getElementById(x + "," + y).value.substring(0,1);
+		piece = document.getElementById(x + "," + y).value.substring(1);
+		selectedX = x;
+		selectedY = y;
+		if (!selected && document.getElementById(x + "," + y).value != "." && pieceColor == currentPlayer) {
+			selected = true;
+			if (lastPiece != undefined)
+				document.getElementById(lastPiece).className = "button";
+			document.getElementById(x + "," + y).className = "selectedButton";
+			lastPiece = x + "," + y;
+		}
+		else {
+			if (pieceColor != currentPlayer && moveMaker(lastPiece)) {
+				selected = false;
+				document.getElementById(lastPiece).className = "button";
+				document.getElementById(selectedX + "," + selectedY).value = document.getElementById(lastPiece).value;
+				document.getElementById(lastPiece).value = ".";
+				if (currentPlayer == "W")
+					currentPlayer = "B";
+				else 
+					currentPlayer = "W";
+				lastPiece = undefined;
+			}
+			else if (pieceColor == currentPlayer) {
+				selected = false;
+				document.getElementById(lastPiece).className = "button";
+				myFunction(x,y);
+			}
+		}
+	}
+	
+	function moveMaker(lastPiece) {
+			return pawnMover();
+			//return moveRules[document.getElementById(lastPiece).value.substring(1)];
+	}
+	
+	function pawnMover() {
+		var direction = -1;
+		if (document.getElementById(lastPiece).value.substring(0,1) == "W")
+			direction = 1;
+			
+		if (pieceColor == ".") {
+			if (lastPiece.substring(2) - selectedY == direction && lastPiece.substring(0,1) - selectedX == 0) 
+				return true;
+			else 
+				return false;
+		}
+		else {
+			if (lastPiece.substring(2) - selectedY == direction && Math.abs(lastPiece.substring(0,1) - selectedX) == 1)
+				return true;
+			else 
+				return false;
+		}
+	
+	}
+</script
+
+</body>
+</html>
